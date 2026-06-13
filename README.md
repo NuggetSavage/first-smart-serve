@@ -1,4 +1,4 @@
-# First Legal SmartServe AI
+# First SmartServe 
 
 **Field Operations Intelligence Platform — Clickable Prototype**
 
