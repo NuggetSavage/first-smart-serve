@@ -1,5 +1,5 @@
 /* ============================================================
-   First Legal SmartServe AI — script.js
+   First SmartServe AI — script.js
    All interactions, mock data, charts, and navigation
    ============================================================ */
 
