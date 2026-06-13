@@ -128,4 +128,4 @@ This is a clickable prototype built for executive demonstration purposes. It use
 
 ---
 
-*First Legal SmartServe AI — Prototype v1.0*
+*First SmartServe AI — Prototype v1.0*
