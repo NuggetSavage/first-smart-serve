@@ -1,0 +1,1230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="First SmartServe AI — Field Operations Intelligence Platform">
+  <title>First SmartServe AI</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<!-- ═══════════════════════════════════════════════════════════
+     SIDEBAR NAVIGATION
+═══════════════════════════════════════════════════════════ -->
+<div id="sidebar-overlay"></div>
+
+<nav id="sidebar">
+  <div class="sidebar-logo">
+    <div class="brand">First</div>
+    <div class="name">SmartServe AI</div>
+    <div class="tagline">Field Operations Intelligence</div>
+  </div>
+
+  <div class="nav-section">
+    <div class="nav-label">Operations</div>
+    <div class="nav-item active" data-page="dashboard" onclick="navigate('dashboard', this)">
+      <span class="nav-icon">⬛</span> Dashboard
+    </div>
+    <div class="nav-item" data-page="jobs" onclick="navigate('jobs', this)">
+      <span class="nav-icon">📋</span> Service Jobs
+      <span class="nav-badge">12</span>
+    </div>
+    <div class="nav-item" data-page="fieldmap" onclick="navigate('fieldmap', this)">
+      <span class="nav-icon">🗺</span> Field Map
+    </div>
+    <div class="nav-item" data-page="routes" onclick="navigate('routes', this)">
+      <span class="nav-icon">⚡</span> Route Optimization
+    </div>
+  </div>
+
+  <div class="nav-section">
+    <div class="nav-label">People</div>
+    <div class="nav-item" data-page="servers" onclick="navigate('servers', this)">
+      <span class="nav-icon">👤</span> Servers
+    </div>
+    <div class="nav-item" data-page="analytics" onclick="navigate('analytics', this)">
+      <span class="nav-icon">📊</span> Analytics
+    </div>
+  </div>
+
+  <div class="nav-section">
+    <div class="nav-label">Tools</div>
+    <div class="nav-item" data-page="documents" onclick="navigate('documents', this)">
+      <span class="nav-icon">🗂</span> Documents
+    </div>
+    <div class="nav-item" data-page="ai" onclick="navigate('ai', this)">
+      <span class="nav-icon">✦</span> AI Assistant
+    </div>
+    <div class="nav-item" data-page="settings" onclick="navigate('settings', this)">
+      <span class="nav-icon">⚙</span> Settings
+    </div>
+  </div>
+
+  <div class="sidebar-bottom">
+    <div class="user-card">
+      <div class="user-avatar">RM</div>
+      <div class="user-info">
+        <div class="user-name">Rachel Mitchell</div>
+        <div class="user-role">Operations Manager</div>
+      </div>
+      <div class="online-dot"></div>
+    </div>
+  </div>
+</nav>
+
+<!-- ═══════════════════════════════════════════════════════════
+     MAIN CONTENT AREA
+═══════════════════════════════════════════════════════════ -->
+<div id="main">
+
+  <!-- TOP BAR -->
+  <div id="topbar">
+    <button id="menu-toggle" aria-label="Open navigation menu">☰</button>
+    <div class="topbar-title" id="page-title">Field Operations Dashboard</div>
+    <div class="search-bar">
+      <span style="color:var(--gray-400);font-size:14px">🔍</span>
+      <input type="text" id="global-search" placeholder="Search jobs, defendants, servers…" autocomplete="off">
+    </div>
+    <div class="topbar-actions">
+      <button class="btn btn-outline btn-sm" onclick="showModal('newJobModal')">+ New Job</button>
+      <button class="btn btn-gold btn-sm" onclick="toast('Route optimization running…','success')">⚡ Optimize</button>
+      <button class="notif-btn" onclick="toast('3 new alerts: 2 overdue jobs, 1 failed attempt','warning')" aria-label="Notifications">
+        🔔<div class="notif-dot"></div>
+      </button>
+    </div>
+  </div>
+
+  <!-- SCROLLABLE PAGE CONTENT -->
+  <div id="content">
+
+    <!-- ══════════════════════════════════════════════════════
+         PAGE 1 — DASHBOARD
+    ══════════════════════════════════════════════════════ -->
+    <div class="page active" id="page-dashboard">
+
+      <!-- KPI CARDS -->
+      <div class="kpi-grid">
+        <div class="kpi-card kpi-blue" onclick="navigate('jobs', document.querySelector('[data-page=jobs]'))">
+          <div class="kpi-label">Active Jobs</div>
+          <div class="kpi-value">326</div>
+          <div class="kpi-change up">↑ 14 from yesterday</div>
+        </div>
+        <div class="kpi-card kpi-green">
+          <div class="kpi-label">Completed Today</div>
+          <div class="kpi-value">118</div>
+          <div class="kpi-change up">↑ 23% vs avg</div>
+        </div>
+        <div class="kpi-card kpi-red">
+          <div class="kpi-label">Failed Attempts</div>
+          <div class="kpi-value">21</div>
+          <div class="kpi-change down">↑ 3 from yesterday</div>
+        </div>
+        <div class="kpi-card kpi-navy">
+          <div class="kpi-label">Servers in Field</div>
+          <div class="kpi-value">47</div>
+          <div class="kpi-sub">of 52 active</div>
+        </div>
+        <div class="kpi-card kpi-amber">
+          <div class="kpi-label">Avg Serve Time</div>
+          <div class="kpi-value">2.4<span style="font-size:14px;font-weight:500;color:var(--gray-400)"> days</span></div>
+          <div class="kpi-change up">↓ 0.3 days improved</div>
+        </div>
+        <div class="kpi-card kpi-gold">
+          <div class="kpi-label">Success Rate</div>
+          <div class="kpi-value">91.2<span style="font-size:16px">%</span></div>
+          <div class="kpi-change up">↑ 2.1% this week</div>
+        </div>
+      </div>
+
+      <!-- MAP + ACTIVITY ROW -->
+      <div class="grid-2" style="margin-bottom:20px">
+
+        <!-- Live field map -->
+        <div class="card">
+          <div class="card-header">
+            <div>
+              <div class="card-title">Live Field Map</div>
+              <div class="card-subtitle">47 servers active — updated 30s ago</div>
+            </div>
+            <button class="btn btn-outline btn-sm" onclick="navigate('fieldmap', document.querySelector('[data-page=fieldmap]'))">Full Map →</button>
+          </div>
+          <div class="map-container" id="dashboard-map">
+            <div class="map-grid"></div>
+            <div class="map-road-h" style="top:40%;left:0;right:0"></div>
+            <div class="map-road-h" style="top:65%;left:0;right:0"></div>
+            <div class="map-road-v" style="left:30%;top:0;bottom:0"></div>
+            <div class="map-road-v" style="left:60%;top:0;bottom:0"></div>
+            <div class="map-road-v" style="left:80%;top:0;bottom:0"></div>
+            <div class="map-pin green" style="left:22%;top:28%" onclick="showPinTooltip(this,'✅ Rivera — Completed\n735 Oak Street\n10:14 AM')"></div>
+            <div class="map-pin green" style="left:55%;top:55%" onclick="showPinTooltip(this,'✅ Torres — Completed\n1820 Hill Ave\n11:32 AM')"></div>
+            <div class="map-pin green" style="left:73%;top:35%" onclick="showPinTooltip(this,'✅ Kim — Completed\n406 Grand Blvd\n9:58 AM')"></div>
+            <div class="map-pin amber pulse" style="left:38%;top:45%" onclick="showPinTooltip(this,'🔄 Rodriguez — En Route\nSmith v Johnson\nETA: 12 min')"></div>
+            <div class="map-pin amber pulse" style="left:65%;top:70%" onclick="showPinTooltip(this,'🔄 Williams — Attempting\n4492 Pico Blvd\n3rd attempt')"></div>
+            <div class="map-pin red" style="left:48%;top:25%" onclick="showPinTooltip(this,'❌ Failed Attempt\n1428 Sunset Blvd\nNo contact — 2:15 PM')"></div>
+            <div class="map-pin blue" style="left:82%;top:60%" onclick="showPinTooltip(this,'📌 Lee — Assigned\nNext: 8821 Venice Blvd\nDepart: 3:30 PM')"></div>
+            <div class="map-pin blue" style="left:25%;top:70%" onclick="showPinTooltip(this,'📌 Nguyen — Assigned\nNext: 321 Harbor St\nDepart: 4:00 PM')"></div>
+            <div id="mapTip" class="map-tooltip"></div>
+            <div class="map-legend">
+              <div class="legend-item"><div class="legend-dot" style="background:var(--green)"></div>Completed</div>
+              <div class="legend-item"><div class="legend-dot" style="background:var(--amber)"></div>In Progress</div>
+              <div class="legend-item"><div class="legend-dot" style="background:var(--red)"></div>Failed</div>
+              <div class="legend-item"><div class="legend-dot" style="background:var(--navy)"></div>Assigned</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Activity feed + AI insights -->
+        <div style="display:flex;flex-direction:column;gap:16px">
+          <div class="card" style="flex:1">
+            <div class="card-header">
+              <div class="card-title">Live Activity Feed</div>
+              <span class="badge badge-success" style="font-size:10px">● LIVE</span>
+            </div>
+            <div class="activity-item">
+              <div class="activity-dot green"></div>
+              <div><div class="activity-text"><strong>Michael Torres</strong> completed service — <em>Smith v Johnson</em></div><div class="activity-time">2 min ago · Los Angeles County</div></div>
+            </div>
+            <div class="activity-item">
+              <div class="activity-dot blue"></div>
+              <div><div class="activity-text"><strong>Sarah Lee</strong> uploaded proof of service — <em>Hernandez v City</em></div><div class="activity-time">8 min ago · GPS verified</div></div>
+            </div>
+            <div class="activity-item">
+              <div class="activity-dot red"></div>
+              <div><div class="activity-text">Failed attempt logged — <em>1428 Sunset Blvd</em> (Attempt 3 of 3)</div><div class="activity-time">14 min ago · Escalation triggered</div></div>
+            </div>
+            <div class="activity-item">
+              <div class="activity-dot amber"></div>
+              <div><div class="activity-text">New service assignment received — <em>Patel v Realty Corp</em></div><div class="activity-time">21 min ago · Priority: High</div></div>
+            </div>
+            <div class="activity-item">
+              <div class="activity-dot green"></div>
+              <div><div class="activity-text"><strong>David Kim</strong> completed service on first attempt — <em>Wells v Morton</em></div><div class="activity-time">35 min ago · ★ First attempt success</div></div>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-header">
+              <div class="card-title">✦ AI Insights</div>
+              <span class="badge badge-navy">4 alerts</span>
+            </div>
+            <div class="ai-insight">
+              <div class="ai-icon">🎯</div>
+              <div class="ai-text">
+                <div class="ai-title">High serve probability — 735 Oak Street</div>
+                <div class="ai-detail">Best window: 6–8 PM today · 87% probability based on neighbor patterns</div>
+              </div>
+            </div>
+            <div class="ai-insight" style="background:linear-gradient(135deg,#7b1a1a 0%,#a32d2d 100%)">
+              <div class="ai-icon">⏰</div>
+              <div class="ai-text">
+                <div class="ai-title">12 service attempts are overdue</div>
+                <div class="ai-detail">4 are within 48 hrs of court deadline — immediate action required</div>
+              </div>
+            </div>
+            <div class="ai-insight" style="background:linear-gradient(135deg,#704f00 0%,#b45309 100%)">
+              <div class="ai-icon">⚡</div>
+              <div class="ai-text">
+                <div class="ai-title">Route optimization saves 18% travel time</div>
+                <div class="ai-detail">Reordering 7 routes saves est. 4.2 hrs · 31 mi fuel reduction</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- BOTTOM ROW -->
+      <div class="grid-3">
+        <!-- Overdue jobs -->
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">Overdue Service Jobs</div>
+            <button class="btn btn-outline btn-sm" onclick="navigate('jobs', document.querySelector('[data-page=jobs]'))">View All</button>
+          </div>
+          <div style="font-size:12px">
+            <div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid var(--gray-100)">
+              <div><div style="font-weight:600;color:var(--navy)">Rivera v Bayshore</div><div style="color:var(--gray-400);margin-top:1px">Due Jun 14 · 3 attempts</div></div>
+              <span class="badge badge-danger">URGENT</span>
+            </div>
+            <div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid var(--gray-100)">
+              <div><div style="font-weight:600;color:var(--navy)">Cooper v State Farm</div><div style="color:var(--gray-400);margin-top:1px">Due Jun 15 · 2 attempts</div></div>
+              <span class="badge badge-danger">URGENT</span>
+            </div>
+            <div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid var(--gray-100)">
+              <div><div style="font-weight:600;color:var(--navy)">Tran v Allied Med</div><div style="color:var(--gray-400);margin-top:1px">Due Jun 16 · 1 attempt</div></div>
+              <span class="badge badge-warning">HIGH</span>
+            </div>
+            <div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0">
+              <div><div style="font-weight:600;color:var(--navy)">Williams v Landlord</div><div style="color:var(--gray-400);margin-top:1px">Due Jun 17 · 0 attempts</div></div>
+              <span class="badge badge-warning">HIGH</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Top servers -->
+        <div class="card">
+          <div class="card-header"><div class="card-title">Top Servers Today</div></div>
+          <div style="font-size:12px">
+            <div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--gray-100)">
+              <div class="user-avatar" style="width:30px;height:30px;font-size:11px;background:var(--green)">MT</div>
+              <div style="flex:1"><div style="font-weight:600;color:var(--navy)">Michael Torres</div><div style="color:var(--gray-400)">8 completed · 100% today</div></div>
+              <span>🥇</span>
+            </div>
+            <div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--gray-100)">
+              <div class="user-avatar" style="width:30px;height:30px;font-size:11px;background:var(--blue)">DK</div>
+              <div style="flex:1"><div style="font-weight:600;color:var(--navy)">David Kim</div><div style="color:var(--gray-400)">7 completed · 95.2%</div></div>
+              <span>🥈</span>
+            </div>
+            <div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--gray-100)">
+              <div class="user-avatar" style="width:30px;height:30px;font-size:11px;background:var(--amber)">SL</div>
+              <div style="flex:1"><div style="font-weight:600;color:var(--navy)">Sarah Lee</div><div style="color:var(--gray-400)">6 completed · 92.8%</div></div>
+              <span>🥉</span>
+            </div>
+            <div style="display:flex;align-items:center;gap:10px;padding:8px 0">
+              <div class="user-avatar" style="width:30px;height:30px;font-size:11px;background:var(--navy)">JR</div>
+              <div style="flex:1"><div style="font-weight:600;color:var(--navy)">James Rivera</div><div style="color:var(--gray-400)">5 completed · 90.1%</div></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Hourly chart -->
+        <div class="card">
+          <div class="card-header"><div class="card-title">Today's Service Activity</div></div>
+          <div style="position:relative;height:160px">
+            <canvas id="dashActivityChart" role="img" aria-label="Hourly service activity bar chart">Service attempts and completions by hour of day.</canvas>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- /page-dashboard -->
+
+    <!-- ══════════════════════════════════════════════════════
+         PAGE 2 — SERVICE JOBS
+    ══════════════════════════════════════════════════════ -->
+    <div class="page" id="page-jobs">
+      <div class="section-header">
+        <div>
+          <div class="section-title">Service Jobs</div>
+          <div style="font-size:12px;color:var(--gray-400);margin-top:2px">326 active · 47 assigned today</div>
+        </div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap">
+          <select class="form-select" style="width:140px;height:34px;font-size:12px" onchange="filterJobs(this.value)">
+            <option value="">All Status</option>
+            <option value="in-progress">In Progress</option>
+            <option value="assigned">Assigned</option>
+            <option value="failed">Failed</option>
+            <option value="completed">Completed</option>
+          </select>
+          <select class="form-select" style="width:140px;height:34px;font-size:12px">
+            <option>All Priority</option>
+            <option>High Priority</option>
+            <option>Normal</option>
+          </select>
+          <button class="btn btn-primary btn-sm" onclick="showModal('newJobModal')">+ New Job</button>
+        </div>
+      </div>
+
+      <div class="card" style="padding:0">
+        <div class="table-wrapper">
+          <table id="jobs-table">
+            <thead>
+              <tr>
+                <th onclick="sortTable(this)">Matter <span class="sort-icon">↕</span></th>
+                <th onclick="sortTable(this)">Defendant <span class="sort-icon">↕</span></th>
+                <th onclick="sortTable(this)">Court <span class="sort-icon">↕</span></th>
+                <th onclick="sortTable(this)">Deadline <span class="sort-icon">↕</span></th>
+                <th onclick="sortTable(this)">Server <span class="sort-icon">↕</span></th>
+                <th onclick="sortTable(this)">Attempts <span class="sort-icon">↕</span></th>
+                <th onclick="sortTable(this)">Priority <span class="sort-icon">↕</span></th>
+                <th>Status</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr onclick="navigate('jobdetail', null)" style="cursor:pointer">
+                <td><strong style="color:var(--navy)">Smith v Johnson</strong><div style="font-size:11px;color:var(--gray-400)">#2026-04182</div></td>
+                <td>Robert Johnson<div style="font-size:11px;color:var(--gray-400)">1842 Mulholland Dr</div></td>
+                <td style="font-size:12px">LA County Superior</td>
+                <td style="font-size:12px;color:var(--red);font-weight:600">Jun 18, 2026</td>
+                <td><div style="display:flex;align-items:center;gap:7px"><div class="user-avatar" style="width:26px;height:26px;font-size:10px;background:var(--green)">MT</div><span style="font-size:12px">M. Torres</span></div></td>
+                <td style="font-size:12px;text-align:center">3</td>
+                <td><span class="badge badge-danger">High</span></td>
+                <td><span class="badge badge-warning">In Progress</span></td>
+                <td><button class="btn btn-outline btn-sm" onclick="navigate('jobdetail',null);event.stopPropagation()">View</button></td>
+              </tr>
+              <tr>
+                <td><strong style="color:var(--navy)">Hernandez v City</strong><div style="font-size:11px;color:var(--gray-400)">#2026-04155</div></td>
+                <td>Maria Hernandez<div style="font-size:11px;color:var(--gray-400)">406 S Grand Ave</div></td>
+                <td style="font-size:12px">LA County Superior</td>
+                <td style="font-size:12px">Jun 22, 2026</td>
+                <td><div style="display:flex;align-items:center;gap:7px"><div class="user-avatar" style="width:26px;height:26px;font-size:10px;background:var(--blue)">SL</div><span style="font-size:12px">S. Lee</span></div></td>
+                <td style="font-size:12px;text-align:center">1</td>
+                <td><span class="badge badge-warning">Med</span></td>
+                <td><span class="badge badge-success">Completed</span></td>
+                <td><button class="btn btn-outline btn-sm" onclick="toast('Opening Hernandez v City…','success')">View</button></td>
+              </tr>
+              <tr>
+                <td><strong style="color:var(--navy)">Rivera v Bayshore</strong><div style="font-size:11px;color:var(--gray-400)">#2026-04128</div></td>
+                <td>Carlos Rivera<div style="font-size:11px;color:var(--gray-400)">1428 Sunset Blvd</div></td>
+                <td style="font-size:12px">Orange County Superior</td>
+                <td style="font-size:12px;color:var(--red);font-weight:600">Jun 14, 2026</td>
+                <td><div style="display:flex;align-items:center;gap:7px"><div class="user-avatar" style="width:26px;height:26px;font-size:10px;background:var(--amber)">JR</div><span style="font-size:12px">J. Rivera</span></div></td>
+                <td style="font-size:12px;text-align:center">3</td>
+                <td><span class="badge badge-danger">High</span></td>
+                <td><span class="badge badge-danger">Overdue</span></td>
+                <td><button class="btn btn-danger btn-sm" onclick="toast('Escalating Rivera v Bayshore — supervisor notified','warning')">Escalate</button></td>
+              </tr>
+              <tr>
+                <td><strong style="color:var(--navy)">Wells v Morton</strong><div style="font-size:11px;color:var(--gray-400)">#2026-04099</div></td>
+                <td>Patricia Morton<div style="font-size:11px;color:var(--gray-400)">8821 Venice Blvd</div></td>
+                <td style="font-size:12px">LA County Superior</td>
+                <td style="font-size:12px">Jun 28, 2026</td>
+                <td><div style="display:flex;align-items:center;gap:7px"><div class="user-avatar" style="width:26px;height:26px;font-size:10px;background:var(--navy)">DK</div><span style="font-size:12px">D. Kim</span></div></td>
+                <td style="font-size:12px;text-align:center">1</td>
+                <td><span class="badge badge-navy">Normal</span></td>
+                <td><span class="badge badge-success">Completed</span></td>
+                <td><button class="btn btn-outline btn-sm" onclick="toast('Opening Wells v Morton…','success')">View</button></td>
+              </tr>
+              <tr>
+                <td><strong style="color:var(--navy)">Patel v Realty Corp</strong><div style="font-size:11px;color:var(--gray-400)">#2026-04211</div></td>
+                <td>Anjali Patel<div style="font-size:11px;color:var(--gray-400)">3301 Wilshire Blvd</div></td>
+                <td style="font-size:12px">LA County Superior</td>
+                <td style="font-size:12px">Jul 02, 2026</td>
+                <td><div style="display:flex;align-items:center;gap:7px"><div class="user-avatar" style="width:26px;height:26px;font-size:10px;background:var(--red)">RW</div><span style="font-size:12px">R. Wilson</span></div></td>
+                <td style="font-size:12px;text-align:center">0</td>
+                <td><span class="badge badge-danger">High</span></td>
+                <td><span class="badge badge-info">Assigned</span></td>
+                <td><button class="btn btn-outline btn-sm" onclick="toast('Opening Patel v Realty Corp…','success')">View</button></td>
+              </tr>
+              <tr>
+                <td><strong style="color:var(--navy)">Cooper v State Farm</strong><div style="font-size:11px;color:var(--gray-400)">#2026-04088</div></td>
+                <td>Brian Cooper<div style="font-size:11px;color:var(--gray-400)">721 N Figueroa St</div></td>
+                <td style="font-size:12px">San Bernardino Superior</td>
+                <td style="font-size:12px;color:var(--red);font-weight:600">Jun 15, 2026</td>
+                <td><div style="display:flex;align-items:center;gap:7px"><div class="user-avatar" style="width:26px;height:26px;font-size:10px;background:var(--green)">LN</div><span style="font-size:12px">L. Nguyen</span></div></td>
+                <td style="font-size:12px;text-align:center">2</td>
+                <td><span class="badge badge-danger">High</span></td>
+                <td><span class="badge badge-danger">Overdue</span></td>
+                <td><button class="btn btn-danger btn-sm" onclick="toast('Escalating Cooper v State Farm — supervisor notified','warning')">Escalate</button></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+    <!-- /page-jobs -->
+
+    <!-- ══════════════════════════════════════════════════════
+         PAGE 3 — JOB DETAIL
+    ══════════════════════════════════════════════════════ -->
+    <div class="page" id="page-jobdetail">
+      <div style="margin-bottom:16px">
+        <button class="btn btn-outline btn-sm" onclick="navigate('jobs', document.querySelector('[data-page=jobs]'))">← Back to Jobs</button>
+      </div>
+
+      <div style="display:flex;gap:16px;margin-bottom:20px;align-items:flex-start;flex-wrap:wrap">
+        <div style="flex:1;min-width:200px">
+          <div style="font-size:22px;font-weight:700;color:var(--navy)">Smith v Johnson</div>
+          <div style="font-size:13px;color:var(--gray-400);margin-top:4px">Matter #2026-04182 · Los Angeles County Superior Court</div>
+        </div>
+        <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+          <span class="badge badge-danger" style="font-size:12px;padding:6px 12px">🔴 High Priority</span>
+          <span class="badge badge-warning" style="font-size:12px;padding:6px 12px">In Progress</span>
+          <button class="btn btn-gold" onclick="toast('Generating affidavit — document ready in 15s','success')">Generate Affidavit</button>
+          <button class="btn btn-primary" onclick="showModal('reassignModal')">Reassign Server</button>
+        </div>
+      </div>
+
+      <div class="grid-3" style="margin-bottom:20px">
+        <!-- Defendant info -->
+        <div class="card">
+          <div class="card-title" style="margin-bottom:14px">Defendant Information</div>
+          <div style="display:grid;gap:10px;font-size:13px">
+            <div><div style="font-size:11px;color:var(--gray-400);font-weight:600;text-transform:uppercase;letter-spacing:.06em">Full Name</div><div style="font-weight:600;color:var(--navy);margin-top:2px">Robert J. Johnson</div></div>
+            <div><div style="font-size:11px;color:var(--gray-400);font-weight:600;text-transform:uppercase;letter-spacing:.06em">Address</div><div style="margin-top:2px">1842 Mulholland Dr, Los Angeles, CA 90046</div></div>
+            <div><div style="font-size:11px;color:var(--gray-400);font-weight:600;text-transform:uppercase;letter-spacing:.06em">Phone</div><div style="margin-top:2px">(310) 555-0192</div></div>
+            <div><div style="font-size:11px;color:var(--gray-400);font-weight:600;text-transform:uppercase;letter-spacing:.06em">Service Deadline</div><div style="font-weight:700;color:var(--red);margin-top:2px">June 18, 2026 — 6 days remaining</div></div>
+            <div><div style="font-size:11px;color:var(--gray-400);font-weight:600;text-transform:uppercase;letter-spacing:.06em">Known Notes</div><div style="margin-top:2px">Works from home · Active evening hours · Has dogs — approach cautiously</div></div>
+          </div>
+        </div>
+
+        <!-- Assigned server -->
+        <div class="card">
+          <div class="card-title" style="margin-bottom:14px">Assigned Process Server</div>
+          <div style="display:flex;align-items:center;gap:12px;margin-bottom:16px">
+            <div class="user-avatar" style="width:48px;height:48px;font-size:16px;background:var(--green)">MT</div>
+            <div>
+              <div style="font-size:15px;font-weight:700;color:var(--navy)">Michael Torres</div>
+              <div style="font-size:12px;color:var(--gray-400)">ID: SRV-042 · West LA Region</div>
+              <span class="badge badge-success" style="margin-top:4px;font-size:10px">● In Field</span>
+            </div>
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+            <div class="stat-mini"><div class="stat-mini-val">94.2%</div><div class="stat-mini-lbl">Success Rate</div></div>
+            <div class="stat-mini"><div class="stat-mini-val">1.8 days</div><div class="stat-mini-lbl">Avg Completion</div></div>
+            <div class="stat-mini"><div class="stat-mini-val">847</div><div class="stat-mini-lbl">Total Served</div></div>
+            <div class="stat-mini"><div class="stat-mini-val">4.9 ★</div><div class="stat-mini-lbl">Rating</div></div>
+          </div>
+          <button class="btn btn-outline btn-sm" style="margin-top:12px;width:100%" onclick="toast('Contacting Michael Torres…','success')">📞 Contact Server</button>
+        </div>
+
+        <!-- Case details -->
+        <div class="card">
+          <div class="card-title" style="margin-bottom:14px">Case Details</div>
+          <div style="display:grid;gap:10px;font-size:13px">
+            <div><div style="font-size:11px;color:var(--gray-400);font-weight:600;text-transform:uppercase;letter-spacing:.06em">Plaintiff</div><div style="font-weight:600;color:var(--navy);margin-top:2px">David Smith</div></div>
+            <div><div style="font-size:11px;color:var(--gray-400);font-weight:600;text-transform:uppercase;letter-spacing:.06em">Court</div><div style="margin-top:2px">Los Angeles County Superior Court</div></div>
+            <div><div style="font-size:11px;color:var(--gray-400);font-weight:600;text-transform:uppercase;letter-spacing:.06em">Case Type</div><div style="margin-top:2px">Civil — Property Dispute</div></div>
+            <div><div style="font-size:11px;color:var(--gray-400);font-weight:600;text-transform:uppercase;letter-spacing:.06em">Salesforce ID</div><div style="margin-top:2px;color:var(--blue);font-family:monospace;font-size:12px">SFDC-008-2026-JS</div></div>
+            <div style="background:var(--blue-bg);border-radius:8px;padding:10px">
+              <div style="font-size:11px;font-weight:700;color:var(--blue);margin-bottom:4px">✦ AI INSIGHT</div>
+              <div style="font-size:12px;color:var(--gray-700)">Serve probability 87% if attempted between <strong>6–8 PM today</strong>. Defendant vehicle observed in driveway 5:45–9 PM on weekdays.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Timeline + Proof of Service -->
+      <div class="grid-2">
+        <div class="card">
+          <div class="card-title" style="margin-bottom:20px">Attempt Timeline</div>
+          <div class="timeline">
+            <div class="timeline-item failed">
+              <div class="tl-header">
+                <span class="tl-title">Attempt #1</span>
+                <span class="badge badge-danger">No Contact</span>
+                <span class="tl-time">Jun 10 · 9:14 AM</span>
+              </div>
+              <div class="tl-body">No answer at door. Lights on inside. Vehicle in driveway — grey Audi A6, CA plate 7ABC234.<br><span style="color:var(--gray-400);font-size:11px">📍 34.0522, -118.2437 &nbsp; 📷 1 photo</span></div>
+            </div>
+            <div class="timeline-item failed">
+              <div class="tl-header">
+                <span class="tl-title">Attempt #2</span>
+                <span class="badge badge-danger">Refused</span>
+                <span class="tl-time">Jun 11 · 7:02 PM</span>
+              </div>
+              <div class="tl-body">Male matching description answered door, stated "wrong address" and closed door. Positive ID made — proceeding to sub-serve.<br><span style="color:var(--gray-400);font-size:11px">📍 34.0522, -118.2437 &nbsp; 📷 2 photos</span></div>
+            </div>
+            <div class="timeline-item pending">
+              <div class="tl-header">
+                <span class="tl-title">Attempt #3</span>
+                <span class="badge badge-warning">Scheduled</span>
+                <span class="tl-time">Today · 6:30 PM</span>
+              </div>
+              <div class="tl-body" style="background:var(--amber-bg)">
+                <div style="font-weight:600;color:#92400e;margin-bottom:4px">Scheduled — Michael Torres en route</div>
+                <div style="font-size:11px;color:var(--gray-500)">✦ AI recommends 6–8 PM window · Sub-service authorized if refused again</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-title" style="margin-bottom:16px">Proof of Service</div>
+          <div style="margin-bottom:16px">
+            <div class="doc-item" onclick="toast('Opening POS document…','success')">
+              <div class="doc-icon pdf">📄</div>
+              <div class="doc-info"><div class="doc-name">POS_Smith_v_Johnson_Attempt2.pdf</div><div class="doc-meta">GPS Verified · Jun 11, 2026</div></div>
+              <div class="doc-size">284 KB</div>
+            </div>
+            <div class="doc-item" onclick="toast('Opening photo evidence…','success')">
+              <div class="doc-icon img">🖼</div>
+              <div class="doc-info"><div class="doc-name">Evidence_photo_1842_mulholland.jpg</div><div class="doc-meta">Jun 11, 2026 · 7:02 PM</div></div>
+              <div class="doc-size">1.8 MB</div>
+            </div>
+            <div class="doc-item" onclick="toast('Opening vehicle photo…','success')">
+              <div class="doc-icon img">🖼</div>
+              <div class="doc-info"><div class="doc-name">Vehicle_photo_7ABC234.jpg</div><div class="doc-meta">Jun 10, 2026 · 9:14 AM</div></div>
+              <div class="doc-size">2.1 MB</div>
+            </div>
+          </div>
+          <div style="background:var(--gray-50);border-radius:10px;padding:14px;border:1px dashed var(--gray-200)">
+            <div style="font-size:12px;font-weight:600;color:var(--navy);margin-bottom:6px">Generate Final Affidavit</div>
+            <div style="font-size:12px;color:var(--gray-500);margin-bottom:12px">Compiles all attempts, GPS coordinates, timestamps, and photo evidence into court-ready format.</div>
+            <button class="btn btn-gold" style="width:100%" onclick="toast('Generating affidavit — document ready in 15s','success')">⚡ Generate Affidavit PDF</button>
+          </div>
+          <div style="margin-top:12px;display:grid;grid-template-columns:1fr 1fr;gap:8px">
+            <div style="background:var(--green-bg);border-radius:8px;padding:10px;text-align:center">
+              <div style="font-size:16px;font-weight:700;color:var(--green)">✓</div>
+              <div style="font-size:11px;color:var(--green);font-weight:600">GPS Verified</div>
+            </div>
+            <div style="background:var(--amber-bg);border-radius:8px;padding:10px;text-align:center">
+              <div style="font-size:16px;font-weight:700;color:#b45309">⏳</div>
+              <div style="font-size:11px;color:#b45309;font-weight:600">Court Filing Pending</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- /page-jobdetail -->
+
+    <!-- ══════════════════════════════════════════════════════
+         PAGE 4 — FIELD MAP
+    ══════════════════════════════════════════════════════ -->
+    <div class="page" id="page-fieldmap">
+      <div class="section-header">
+        <div>
+          <div class="section-title">Field Map — Live Operations</div>
+          <div style="font-size:12px;color:var(--gray-400)">47 servers active · 326 jobs in field · Updated 30s ago</div>
+        </div>
+        <div style="display:flex;gap:8px">
+          <button class="btn btn-outline btn-sm" onclick="toast('Refreshing all server positions…','success')">↻ Refresh</button>
+          <button class="btn btn-gold btn-sm" onclick="toast('Generating optimal cluster assignments…','success')">⚡ Auto-Assign</button>
+        </div>
+      </div>
+
+      <div class="grid-2">
+        <div class="card" style="padding:16px">
+          <div class="map-container" style="height:480px">
+            <div class="map-grid"></div>
+            <div class="map-road-h" style="top:30%;left:0;right:0;height:3px"></div>
+            <div class="map-road-h" style="top:50%;left:0;right:0"></div>
+            <div class="map-road-h" style="top:70%;left:0;right:0"></div>
+            <div class="map-road-v" style="left:25%;top:0;bottom:0"></div>
+            <div class="map-road-v" style="left:50%;top:0;bottom:0;width:3px"></div>
+            <div class="map-road-v" style="left:75%;top:0;bottom:0"></div>
+            <div class="map-pin green" style="left:18%;top:22%" onclick="selectServer('Michael Torres','8 completed today · West LA Region','94.2%','✅ Idle — available for assignment')"></div>
+            <div class="map-pin green" style="left:42%;top:38%" onclick="selectServer('David Kim','7 completed · Central LA','95.2%','✅ En route to next job')"></div>
+            <div class="map-pin amber pulse" style="left:55%;top:55%" onclick="selectServer('Sarah Lee','Currently attempting serve · 6 completed','92.8%','🔄 Attempting — 3301 Wilshire')"></div>
+            <div class="map-pin amber pulse" style="left:32%;top:62%" onclick="selectServer('James Rivera','2 jobs complete · East LA','88.4%','🔄 En route — ETA 8 min')"></div>
+            <div class="map-pin blue" style="left:68%;top:28%" onclick="selectServer('Linda Nguyen','Assigned · 0 started today','91.7%','📌 Starting route at 3 PM')"></div>
+            <div class="map-pin blue" style="left:80%;top:72%" onclick="selectServer('Robert Wilson','3 jobs assigned · South Bay','89.3%','📌 En route to first job')"></div>
+            <div class="map-pin red" style="left:48%;top:20%" onclick="selectServer('Failed Attempt','1428 Sunset Blvd','—','❌ No contact — logged 2:15 PM')"></div>
+            <div class="map-pin red" style="left:62%;top:78%" onclick="selectServer('Failed Attempt','892 Pico Blvd','—','❌ Refused — escalation pending')"></div>
+            <div id="mapTip2" class="map-tooltip"></div>
+            <div class="map-legend">
+              <div style="font-size:11px;font-weight:700;color:var(--navy);margin-bottom:6px">Click pins for details</div>
+              <div class="legend-item"><div class="legend-dot" style="background:var(--green)"></div>Server — Active</div>
+              <div class="legend-item"><div class="legend-dot" style="background:var(--amber)"></div>Server — Attempting</div>
+              <div class="legend-item"><div class="legend-dot" style="background:var(--navy)"></div>Server — Assigned</div>
+              <div class="legend-item"><div class="legend-dot" style="background:var(--red)"></div>Failed Location</div>
+            </div>
+            <div class="map-controls">
+              <button class="btn btn-outline btn-sm" style="background:var(--white)" onclick="toast('Traffic layer toggled','success')">🚦 Traffic</button>
+              <button class="btn btn-outline btn-sm" style="background:var(--white)" onclick="toast('Showing job clusters','success')">⬡ Clusters</button>
+            </div>
+          </div>
+        </div>
+
+        <div style="display:flex;flex-direction:column;gap:12px">
+          <!-- Server detail panel -->
+          <div class="card" id="server-detail-panel">
+            <div class="card-title" style="margin-bottom:12px">Server Detail</div>
+            <div id="server-detail-content" style="font-size:13px;color:var(--gray-400);text-align:center;padding:20px 0">
+              Click a pin on the map to view server details
+            </div>
+          </div>
+
+          <!-- Dispatch queue -->
+          <div class="card" style="flex:1">
+            <div class="card-header">
+              <div class="card-title">Dispatch Queue</div>
+              <span class="badge badge-warning">7 pending</span>
+            </div>
+            <div style="font-size:12px">
+              <div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid var(--gray-100)">
+                <div><div style="font-weight:600;color:var(--navy)">Tran v Allied Medical</div><div style="color:var(--gray-400)">5801 Olympic Blvd · High</div></div>
+                <button class="btn btn-primary btn-sm" onclick="toast('Opening assignment dialog…','success')">Assign</button>
+              </div>
+              <div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid var(--gray-100)">
+                <div><div style="font-weight:600;color:var(--navy)">Williams v Landlord</div><div style="color:var(--gray-400)">2244 S Vermont Ave · Normal</div></div>
+                <button class="btn btn-primary btn-sm" onclick="toast('Opening assignment dialog…','success')">Assign</button>
+              </div>
+              <div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid var(--gray-100)">
+                <div><div style="font-weight:600;color:var(--navy)">Chen v Pacific Trust</div><div style="color:var(--gray-400)">450 N Figueroa · Normal</div></div>
+                <button class="btn btn-primary btn-sm" onclick="toast('Opening assignment dialog…','success')">Assign</button>
+              </div>
+              <div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0">
+                <div><div style="font-weight:600;color:var(--navy)">Moore v State</div><div style="color:var(--gray-400)">1200 E 6th St · High</div></div>
+                <button class="btn btn-danger btn-sm" onclick="toast('Marked urgent — priority escalated','warning')">Urgent</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- /page-fieldmap -->
+
+    <!-- ══════════════════════════════════════════════════════
+         PAGE 5 — ROUTE OPTIMIZATION
+    ══════════════════════════════════════════════════════ -->
+    <div class="page" id="page-routes">
+      <div class="section-header">
+        <div>
+          <div class="section-title">Route Optimization</div>
+          <div style="font-size:12px;color:var(--gray-400)">AI-powered sequencing for maximum serve probability</div>
+        </div>
+        <button class="btn btn-gold" onclick="toast('Running optimization — 7 routes updated','success')">⚡ Run Optimization</button>
+      </div>
+
+      <div class="kpi-grid" style="grid-template-columns:repeat(4,1fr);margin-bottom:20px">
+        <div class="kpi-card kpi-green"><div class="kpi-label">Travel Time Saved</div><div class="kpi-value">4.2 <span style="font-size:14px">hrs</span></div><div class="kpi-change up">18% reduction today</div></div>
+        <div class="kpi-card kpi-navy"><div class="kpi-label">Miles Reduced</div><div class="kpi-value">31 <span style="font-size:14px">mi</span></div><div class="kpi-change up">vs manual routing</div></div>
+        <div class="kpi-card kpi-gold"><div class="kpi-label">Fuel Savings Est.</div><div class="kpi-value">$48</div><div class="kpi-change up">Today's routes</div></div>
+        <div class="kpi-card kpi-blue"><div class="kpi-label">Completion Prob.</div><div class="kpi-value">87.4<span style="font-size:16px">%</span></div><div class="kpi-change up">↑ 9.2% vs unoptimized</div></div>
+      </div>
+
+      <div class="grid-2">
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">Michael Torres — Optimized Route</div>
+            <select class="form-select" style="width:160px;height:32px;font-size:12px" onchange="toast('Loaded route for '+this.options[this.selectedIndex].text,'success')">
+              <option>Michael Torres</option>
+              <option>David Kim</option>
+              <option>Sarah Lee</option>
+              <option>James Rivera</option>
+            </select>
+          </div>
+          <div class="route-stop" onclick="toast('Opening job detail…','success')">
+            <div class="route-num">1</div>
+            <div class="route-info">
+              <div class="route-name">Smith v Johnson — Johnson, Robert</div>
+              <div class="route-addr">1842 Mulholland Dr, Los Angeles</div>
+              <div class="route-meta"><span>📍 2.3 mi away</span><span>⏱ 8 min drive</span><span>🕕 6:30 PM</span></div>
+            </div>
+            <div class="route-prob high">87%</div>
+          </div>
+          <div class="route-stop" onclick="toast('Opening job detail…','success')">
+            <div class="route-num">2</div>
+            <div class="route-info">
+              <div class="route-name">Patel v Realty Corp — Patel, Anjali</div>
+              <div class="route-addr">3301 Wilshire Blvd, Los Angeles</div>
+              <div class="route-meta"><span>📍 4.1 mi from stop 1</span><span>⏱ 12 min</span><span>🕖 7:30 PM</span></div>
+            </div>
+            <div class="route-prob med">72%</div>
+          </div>
+          <div class="route-stop" onclick="toast('Opening job detail…','success')">
+            <div class="route-num">3</div>
+            <div class="route-info">
+              <div class="route-name">Cooper v State Farm — Cooper, Brian</div>
+              <div class="route-addr">721 N Figueroa St, Los Angeles</div>
+              <div class="route-meta"><span>📍 5.8 mi from stop 2</span><span>⏱ 16 min</span><span>🕗 8:30 PM</span></div>
+            </div>
+            <div class="route-prob med">61%</div>
+          </div>
+          <div class="route-stop" style="border:1px dashed var(--gray-200)">
+            <div class="route-num" style="background:var(--gray-200);color:var(--gray-500)">+</div>
+            <div class="route-info"><div style="font-size:12px;color:var(--gray-400)">Add stop to this route</div></div>
+            <button class="btn btn-outline btn-sm" onclick="toast('Opening job picker…','success')">Add</button>
+          </div>
+        </div>
+
+        <div style="display:flex;flex-direction:column;gap:16px">
+          <div class="card">
+            <div class="card-title" style="margin-bottom:12px">✦ AI Scheduling Recommendations</div>
+            <div class="ai-insight">
+              <div class="ai-icon">🌙</div>
+              <div class="ai-text">
+                <div class="ai-title">Evening windows — higher success rate</div>
+                <div class="ai-detail">8 defendants historically unavailable before noon. Evening attempts yield 34% better results.</div>
+              </div>
+            </div>
+            <div class="ai-insight" style="background:linear-gradient(135deg,#3b6d11 0%,#16A34A 100%)">
+              <div class="ai-icon">🏘</div>
+              <div class="ai-text">
+                <div class="ai-title">Neighbor activity confirms occupancy</div>
+                <div class="ai-detail">735 Oak St area — high pedestrian activity 5–9 PM suggests residential presence.</div>
+              </div>
+            </div>
+            <div class="ai-insight" style="background:linear-gradient(135deg,#704f00 0%,#b45309 100%)">
+              <div class="ai-icon">🔁</div>
+              <div class="ai-text">
+                <div class="ai-title">5 defendants — repeated evasion pattern</div>
+                <div class="ai-detail">Sub-service authorization recommended for Rivera, Cooper, and Tran cases.</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-title" style="margin-bottom:12px">Route Comparison</div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;font-size:12px">
+              <div style="background:var(--red-bg);border-radius:8px;padding:12px">
+                <div style="font-size:11px;font-weight:700;color:var(--red);margin-bottom:8px">MANUAL ROUTING</div>
+                <div style="display:grid;gap:5px">
+                  <div style="display:flex;justify-content:space-between"><span style="color:var(--gray-500)">Total miles</span><span style="font-weight:600">182 mi</span></div>
+                  <div style="display:flex;justify-content:space-between"><span style="color:var(--gray-500)">Drive time</span><span style="font-weight:600">5.8 hrs</span></div>
+                  <div style="display:flex;justify-content:space-between"><span style="color:var(--gray-500)">Success prob.</span><span style="font-weight:600">78.2%</span></div>
+                  <div style="display:flex;justify-content:space-between"><span style="color:var(--gray-500)">Fuel cost</span><span style="font-weight:600">$68</span></div>
+                </div>
+              </div>
+              <div style="background:var(--green-bg);border-radius:8px;padding:12px">
+                <div style="font-size:11px;font-weight:700;color:var(--green);margin-bottom:8px">AI OPTIMIZED ⚡</div>
+                <div style="display:grid;gap:5px">
+                  <div style="display:flex;justify-content:space-between"><span style="color:var(--gray-500)">Total miles</span><span style="font-weight:600;color:var(--green)">151 mi</span></div>
+                  <div style="display:flex;justify-content:space-between"><span style="color:var(--gray-500)">Drive time</span><span style="font-weight:600;color:var(--green)">3.6 hrs</span></div>
+                  <div style="display:flex;justify-content:space-between"><span style="color:var(--gray-500)">Success prob.</span><span style="font-weight:600;color:var(--green)">87.4%</span></div>
+                  <div style="display:flex;justify-content:space-between"><span style="color:var(--gray-500)">Fuel cost</span><span style="font-weight:600;color:var(--green)">$37</span></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- /page-routes -->
+
+    <!-- ══════════════════════════════════════════════════════
+         PAGE 6 — SERVERS
+    ══════════════════════════════════════════════════════ -->
+    <div class="page" id="page-servers">
+      <div class="section-header">
+        <div class="section-title">Process Server Performance</div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap">
+          <select class="form-select" style="width:140px;height:34px;font-size:12px" onchange="toast('Filtering by '+this.options[this.selectedIndex].text,'success')">
+            <option>All Regions</option><option>West LA</option><option>East LA</option><option>South Bay</option><option>Orange County</option>
+          </select>
+          <button class="btn btn-outline btn-sm" onclick="toast('Exporting server performance CSV…','success')">Export CSV</button>
+          <button class="btn btn-primary btn-sm" onclick="showModal('newServerModal')">+ Add Server</button>
+        </div>
+      </div>
+
+      <div class="grid-4" style="margin-bottom:20px">
+        <div class="card" style="border-top:3px solid var(--gold)">
+          <div style="font-size:10px;font-weight:700;color:var(--gold);letter-spacing:.08em;text-transform:uppercase;margin-bottom:8px">🏆 Top Performer</div>
+          <div style="font-size:13px;font-weight:700;color:var(--navy)">Michael Torres</div>
+          <div style="font-size:11px;color:var(--gray-400);margin-top:1px">94.2% Success · West LA</div>
+          <div class="progress-bar"><div class="progress-fill green" style="width:94%"></div></div>
+        </div>
+        <div class="card" style="border-top:3px solid var(--green)">
+          <div style="font-size:10px;font-weight:700;color:var(--green);letter-spacing:.08em;text-transform:uppercase;margin-bottom:8px">⚡ Most Efficient</div>
+          <div style="font-size:13px;font-weight:700;color:var(--navy)">David Kim</div>
+          <div style="font-size:11px;color:var(--gray-400);margin-top:1px">1.6 days avg · Central LA</div>
+          <div class="progress-bar"><div class="progress-fill green" style="width:88%"></div></div>
+        </div>
+        <div class="card" style="border-top:3px solid var(--blue)">
+          <div style="font-size:10px;font-weight:700;color:var(--blue);letter-spacing:.08em;text-transform:uppercase;margin-bottom:8px">🎯 Highest Rate</div>
+          <div style="font-size:13px;font-weight:700;color:var(--navy)">Sarah Lee</div>
+          <div style="font-size:11px;color:var(--gray-400);margin-top:1px">92.8% First Attempt · East LA</div>
+          <div class="progress-bar"><div class="progress-fill navy" style="width:92%"></div></div>
+        </div>
+        <div class="card" style="border-top:3px solid var(--amber)">
+          <div style="font-size:10px;font-weight:700;color:#b45309;letter-spacing:.08em;text-transform:uppercase;margin-bottom:8px">🚀 Fastest</div>
+          <div style="font-size:13px;font-weight:700;color:var(--navy)">Linda Nguyen</div>
+          <div style="font-size:11px;color:var(--gray-400);margin-top:1px">1.4 days avg · South Bay</div>
+          <div class="progress-bar"><div class="progress-fill amber" style="width:96%"></div></div>
+        </div>
+      </div>
+
+      <div class="card" style="padding:0">
+        <div class="table-wrapper">
+          <table>
+            <thead>
+              <tr>
+                <th>Server</th>
+                <th onclick="sortTable(this)">Assigned <span class="sort-icon">↕</span></th>
+                <th onclick="sortTable(this)">Completed <span class="sort-icon">↕</span></th>
+                <th onclick="sortTable(this)">Success Rate <span class="sort-icon">↕</span></th>
+                <th onclick="sortTable(this)">Failed <span class="sort-icon">↕</span></th>
+                <th onclick="sortTable(this)">Avg Days <span class="sort-icon">↕</span></th>
+                <th>Rating</th>
+                <th>Region</th>
+                <th>Status</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><div style="display:flex;align-items:center;gap:8px"><div class="user-avatar" style="width:30px;height:30px;font-size:10px;background:var(--green)">MT</div><div><div style="font-weight:600;font-size:13px;color:var(--navy)">Michael Torres</div><div style="font-size:11px;color:var(--gray-400)">SRV-042</div></div></div></td>
+                <td>24</td><td>22</td><td><span style="font-weight:700;color:var(--green)">94.2%</span></td><td>2</td><td>1.8</td><td>⭐ 4.9</td>
+                <td><span class="badge badge-navy">West LA</span></td><td><span class="badge badge-success">● Active</span></td>
+                <td><button class="btn btn-outline btn-sm" onclick="toast('Opening Torres profile…','success')">Profile</button></td>
+              </tr>
+              <tr>
+                <td><div style="display:flex;align-items:center;gap:8px"><div class="user-avatar" style="width:30px;height:30px;font-size:10px;background:var(--blue)">DK</div><div><div style="font-weight:600;font-size:13px;color:var(--navy)">David Kim</div><div style="font-size:11px;color:var(--gray-400)">SRV-028</div></div></div></td>
+                <td>21</td><td>20</td><td><span style="font-weight:700;color:var(--green)">95.2%</span></td><td>1</td><td>1.6</td><td>⭐ 4.8</td>
+                <td><span class="badge badge-navy">Central LA</span></td><td><span class="badge badge-success">● Active</span></td>
+                <td><button class="btn btn-outline btn-sm" onclick="toast('Opening Kim profile…','success')">Profile</button></td>
+              </tr>
+              <tr>
+                <td><div style="display:flex;align-items:center;gap:8px"><div class="user-avatar" style="width:30px;height:30px;font-size:10px;background:var(--amber)">SL</div><div><div style="font-weight:600;font-size:13px;color:var(--navy)">Sarah Lee</div><div style="font-size:11px;color:var(--gray-400)">SRV-031</div></div></div></td>
+                <td>18</td><td>17</td><td><span style="font-weight:700;color:var(--green)">92.8%</span></td><td>1</td><td>2.1</td><td>⭐ 4.7</td>
+                <td><span class="badge badge-navy">East LA</span></td><td><span class="badge badge-warning">● Attempting</span></td>
+                <td><button class="btn btn-outline btn-sm" onclick="toast('Opening Lee profile…','success')">Profile</button></td>
+              </tr>
+              <tr>
+                <td><div style="display:flex;align-items:center;gap:8px"><div class="user-avatar" style="width:30px;height:30px;font-size:10px;background:var(--navy)">LN</div><div><div style="font-weight:600;font-size:13px;color:var(--navy)">Linda Nguyen</div><div style="font-size:11px;color:var(--gray-400)">SRV-019</div></div></div></td>
+                <td>19</td><td>18</td><td><span style="font-weight:700;color:var(--green)">91.7%</span></td><td>2</td><td>1.4</td><td>⭐ 4.9</td>
+                <td><span class="badge badge-navy">South Bay</span></td><td><span class="badge badge-info">● Assigned</span></td>
+                <td><button class="btn btn-outline btn-sm" onclick="toast('Opening Nguyen profile…','success')">Profile</button></td>
+              </tr>
+              <tr>
+                <td><div style="display:flex;align-items:center;gap:8px"><div class="user-avatar" style="width:30px;height:30px;font-size:10px;background:var(--red)">JR</div><div><div style="font-weight:600;font-size:13px;color:var(--navy)">James Rivera</div><div style="font-size:11px;color:var(--gray-400)">SRV-037</div></div></div></td>
+                <td>16</td><td>14</td><td><span style="font-weight:700;color:var(--amber)">88.4%</span></td><td>3</td><td>2.4</td><td>⭐ 4.4</td>
+                <td><span class="badge badge-navy">East LA</span></td><td><span class="badge badge-warning">● En Route</span></td>
+                <td><button class="btn btn-outline btn-sm" onclick="toast('Opening Rivera profile…','success')">Profile</button></td>
+              </tr>
+              <tr>
+                <td><div style="display:flex;align-items:center;gap:8px"><div class="user-avatar" style="width:30px;height:30px;font-size:10px;background:var(--gray-400)">RW</div><div><div style="font-weight:600;font-size:13px;color:var(--navy)">Robert Wilson</div><div style="font-size:11px;color:var(--gray-400)">SRV-051</div></div></div></td>
+                <td>14</td><td>11</td><td><span style="font-weight:700;color:var(--amber)">82.1%</span></td><td>4</td><td>3.1</td><td>⭐ 3.9</td>
+                <td><span class="badge badge-navy">Orange County</span></td><td><span class="badge badge-success">● Active</span></td>
+                <td><button class="btn btn-danger btn-sm" onclick="toast('Opening performance review for Wilson…','warning')">Review</button></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+    <!-- /page-servers -->
+
+    <!-- ══════════════════════════════════════════════════════
+         PAGE 7 — ANALYTICS
+    ══════════════════════════════════════════════════════ -->
+    <div class="page" id="page-analytics">
+      <div class="section-header">
+        <div class="section-title">Analytics &amp; Reporting</div>
+        <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+          <div class="tabs">
+            <button class="tab active" onclick="setTab(this,'month')">Month</button>
+            <button class="tab" onclick="setTab(this,'quarter')">Quarter</button>
+            <button class="tab" onclick="setTab(this,'year')">Year</button>
+          </div>
+          <button class="btn btn-outline btn-sm" onclick="toast('Exporting analytics report…','success')">Export PDF</button>
+        </div>
+      </div>
+
+      <div class="kpi-grid" style="margin-bottom:20px">
+        <div class="kpi-card kpi-gold"><div class="kpi-label">Avg Days to Serve</div><div class="kpi-value">2.4</div></div>
+        <div class="kpi-card kpi-blue"><div class="kpi-label">Avg Attempts</div><div class="kpi-value">1.8</div></div>
+        <div class="kpi-card kpi-green"><div class="kpi-label">First Attempt %</div><div class="kpi-value">62%</div></div>
+        <div class="kpi-card kpi-navy"><div class="kpi-label">Cost Per Serve</div><div class="kpi-value">$47</div></div>
+        <div class="kpi-card kpi-amber"><div class="kpi-label">Revenue Per Job</div><div class="kpi-value">$124</div></div>
+        <div class="kpi-card kpi-red"><div class="kpi-label">Utilization Rate</div><div class="kpi-value">88%</div></div>
+      </div>
+
+      <div class="grid-2" style="margin-bottom:16px">
+        <div class="card">
+          <div class="card-header"><div class="card-title">Service Success Rate — Monthly Trend</div></div>
+          <div style="position:relative;height:200px">
+            <canvas id="successRateChart" role="img" aria-label="Monthly service success rate trend line chart">Success rate from January through June 2026.</canvas>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-header"><div class="card-title">Failed Attempts by Region</div></div>
+          <div style="position:relative;height:200px">
+            <canvas id="failedRegionChart" role="img" aria-label="Failed attempts by region bar chart">Failed attempts per LA region.</canvas>
+          </div>
+        </div>
+      </div>
+
+      <div class="grid-2">
+        <div class="card">
+          <div class="card-header"><div class="card-title">Workload Distribution by Server</div></div>
+          <div style="position:relative;height:220px">
+            <canvas id="workloadChart" role="img" aria-label="Horizontal bar chart of jobs per server">Jobs assigned per server this month.</canvas>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-header"><div class="card-title">Monthly Job Volume</div></div>
+          <div style="position:relative;height:220px">
+            <canvas id="volumeChart" role="img" aria-label="Monthly job volume grouped bar chart">Monthly total received vs completed jobs.</canvas>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- /page-analytics -->
+
+    <!-- ══════════════════════════════════════════════════════
+         PAGE 8 — DOCUMENTS
+    ══════════════════════════════════════════════════════ -->
+    <div class="page" id="page-documents">
+      <div class="section-header">
+        <div class="section-title">Document Center</div>
+        <button class="btn btn-primary btn-sm" onclick="toast('Opening document upload…','success')">+ Upload Document</button>
+      </div>
+
+      <div class="card" style="margin-bottom:16px">
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px">
+          <input type="text" class="form-input" placeholder="Matter number…" style="font-size:12px">
+          <input type="text" class="form-input" placeholder="Defendant name…" style="font-size:12px">
+          <input type="date" class="form-input" style="font-size:12px">
+          <select class="form-select" style="font-size:12px">
+            <option>All Types</option>
+            <option>Proof of Service</option>
+            <option>Affidavit</option>
+            <option>Photo Evidence</option>
+            <option>Court Filing</option>
+          </select>
+          <button class="btn btn-primary" onclick="toast('Searching documents…','success')">Search</button>
+        </div>
+      </div>
+
+      <div class="grid-2">
+        <div>
+          <div style="font-size:13px;font-weight:700;color:var(--navy);margin-bottom:12px">Proof of Service</div>
+          <div class="doc-item" onclick="toast('Opening Smith v Johnson POS…','success')">
+            <div class="doc-icon pdf">📄</div>
+            <div class="doc-info"><div class="doc-name">POS_Smith_v_Johnson_Attempt2.pdf</div><div class="doc-meta">Matter #2026-04182 · Jun 11, 2026 · GPS Verified</div></div>
+            <span class="badge badge-success">Verified</span>
+          </div>
+          <div class="doc-item" onclick="toast('Opening Hernandez POS…','success')">
+            <div class="doc-icon pdf">📄</div>
+            <div class="doc-info"><div class="doc-name">POS_Hernandez_v_City_Final.pdf</div><div class="doc-meta">Matter #2026-04155 · Jun 10, 2026</div></div>
+            <span class="badge badge-success">Filed</span>
+          </div>
+          <div class="doc-item" onclick="toast('Opening Wells POS…','success')">
+            <div class="doc-icon pdf">📄</div>
+            <div class="doc-info"><div class="doc-name">POS_Wells_v_Morton_Final.pdf</div><div class="doc-meta">Matter #2026-04099 · Jun 12, 2026</div></div>
+            <span class="badge badge-info">Ready to File</span>
+          </div>
+          <div style="font-size:13px;font-weight:700;color:var(--navy);margin:16px 0 12px">Affidavits</div>
+          <div class="doc-item" onclick="toast('Opening affidavit…','success')">
+            <div class="doc-icon doc">📋</div>
+            <div class="doc-info"><div class="doc-name">Affidavit_Rivera_v_Bayshore_3Attempts.pdf</div><div class="doc-meta">Matter #2026-04128 · 3 attempts documented</div></div>
+            <span class="badge badge-warning">Court Review</span>
+          </div>
+        </div>
+        <div>
+          <div style="font-size:13px;font-weight:700;color:var(--navy);margin-bottom:12px">Photo Evidence</div>
+          <div class="doc-item" onclick="toast('Opening photo evidence…','success')">
+            <div class="doc-icon img">🖼</div>
+            <div class="doc-info"><div class="doc-name">Evidence_1842_Mulholland_Attempt1.jpg</div><div class="doc-meta">Smith v Johnson · Jun 10, 2026 · 9:14 AM</div></div>
+            <div class="doc-size">2.1 MB</div>
+          </div>
+          <div class="doc-item" onclick="toast('Opening vehicle photo…','success')">
+            <div class="doc-icon img">🖼</div>
+            <div class="doc-info"><div class="doc-name">Evidence_1842_Mulholland_Vehicle.jpg</div><div class="doc-meta">Smith v Johnson · Jun 10, 2026 · 9:16 AM</div></div>
+            <div class="doc-size">1.8 MB</div>
+          </div>
+          <div class="doc-item" onclick="toast('Opening photo evidence…','success')">
+            <div class="doc-icon img">🖼</div>
+            <div class="doc-info"><div class="doc-name">Evidence_406_Grand_Attempt1.jpg</div><div class="doc-meta">Hernandez v City · Jun 10, 2026 · 2:30 PM</div></div>
+            <div class="doc-size">3.4 MB</div>
+          </div>
+          <div style="font-size:13px;font-weight:700;color:var(--navy);margin:16px 0 12px">Court Documents</div>
+          <div class="doc-item" onclick="toast('Opening court filing…','success')">
+            <div class="doc-icon pdf">📄</div>
+            <div class="doc-info"><div class="doc-name">Summons_Smith_v_Johnson.pdf</div><div class="doc-meta">LA County Superior · Filed Jun 8, 2026</div></div>
+            <span class="badge badge-navy">Original</span>
+          </div>
+          <div class="doc-item" onclick="toast('Opening court filing…','success')">
+            <div class="doc-icon pdf">📄</div>
+            <div class="doc-info"><div class="doc-name">Complaint_Rivera_v_Bayshore.pdf</div><div class="doc-meta">Orange County Superior · Filed Jun 5, 2026</div></div>
+            <span class="badge badge-navy">Original</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- /page-documents -->
+
+    <!-- ══════════════════════════════════════════════════════
+         PAGE 9 — AI ASSISTANT
+    ══════════════════════════════════════════════════════ -->
+    <div class="page" id="page-ai">
+      <div class="chat-wrapper">
+        <div class="chat-intro">
+          <h1>✦ SmartServe AI</h1>
+          <p>Your operational intelligence assistant — ask anything about your field operations</p>
+        </div>
+
+        <div class="prompt-chips">
+          <button class="prompt-chip" onclick="sendAIMessage('Show all overdue service jobs')">Show overdue jobs</button>
+          <button class="prompt-chip" onclick="sendAIMessage('Which servers are performing below average?')">Below-average servers</button>
+          <button class="prompt-chip" onclick="sendAIMessage('Summarize Smith v Johnson')">Summarize Smith v Johnson</button>
+          <button class="prompt-chip" onclick="sendAIMessage('Identify routes that can be optimized')">Optimize routes</button>
+          <button class="prompt-chip" onclick="sendAIMessage('Show jobs with multiple failed attempts')">Multiple failed attempts</button>
+          <button class="prompt-chip" onclick="sendAIMessage('Which assignments may miss deadlines?')">Deadline risk report</button>
+        </div>
+
+        <div class="chat-container">
+          <div class="chat-messages" id="chat-messages">
+            <div class="chat-msg assistant">
+              <div class="chat-bubble">
+                <div style="font-weight:600;margin-bottom:8px;color:var(--navy)">✦ SmartServe AI — Ready</div>
+                <div>I have full visibility into all 326 active service jobs, 47 field servers, and real-time operation data. Ask me anything about your operations, or use a quick prompt above to get started.</div>
+              </div>
+              <div class="chat-meta">SmartServe AI · Just now</div>
+            </div>
+          </div>
+          <div class="chat-input-row">
+            <textarea class="chat-input" id="chat-input" placeholder="Ask about jobs, servers, routes, deadlines…" rows="1"></textarea>
+            <button class="btn btn-primary" onclick="sendChatMessage()" style="height:44px;padding:0 16px">Send</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- /page-ai -->
+
+    <!-- ══════════════════════════════════════════════════════
+         PAGE 10 — SETTINGS
+    ══════════════════════════════════════════════════════ -->
+    <div class="page" id="page-settings">
+      <div class="section-title" style="margin-bottom:20px">Settings</div>
+      <div class="grid-2">
+        <div class="card">
+          <div class="card-title" style="margin-bottom:14px">Integrations</div>
+          <div style="display:grid;gap:12px;font-size:13px">
+            <div style="display:flex;align-items:center;justify-content:space-between;padding:12px;background:var(--green-bg);border-radius:8px;border:1px solid #bbf7d0">
+              <div><div style="font-weight:700;color:var(--navy)">Salesforce</div><div style="font-size:11px;color:var(--green)">✓ Connected · Case data syncing</div></div>
+              <button class="btn btn-outline btn-sm" onclick="toast('Opening Salesforce integration settings…','success')">Configure</button>
+            </div>
+            <div style="display:flex;align-items:center;justify-content:space-between;padding:12px;background:var(--green-bg);border-radius:8px;border:1px solid #bbf7d0">
+              <div><div style="font-weight:700;color:var(--navy)">DealRoom</div><div style="font-size:11px;color:var(--green)">✓ Connected · Document sync active</div></div>
+              <button class="btn btn-outline btn-sm" onclick="toast('Opening DealRoom integration settings…','success')">Configure</button>
+            </div>
+            <div style="display:flex;align-items:center;justify-content:space-between;padding:12px;background:var(--gray-50);border-radius:8px;border:1px solid var(--gray-200)">
+              <div><div style="font-weight:700;color:var(--navy)">E-File California Courts</div><div style="font-size:11px;color:var(--gray-400)">Not configured</div></div>
+              <button class="btn btn-primary btn-sm" onclick="toast('Opening e-file connection wizard…','success')">Connect</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-title" style="margin-bottom:14px">Notifications &amp; Alerts</div>
+          <div style="display:grid;gap:0;font-size:13px">
+            <div style="display:flex;justify-content:space-between;align-items:center;padding:11px 0;border-bottom:1px solid var(--gray-100)">
+              <span>Failed attempt alerts</span>
+              <div class="toggle-switch" data-on="true" data-label="Failed attempt alerts" style="width:40px;height:22px;background:var(--green);border-radius:11px;cursor:pointer;position:relative;transition:background .2s"><div class="toggle-thumb" style="position:absolute;right:2px;top:2px;width:18px;height:18px;background:var(--white);border-radius:50%;transition:transform .2s"></div></div>
+            </div>
+            <div style="display:flex;justify-content:space-between;align-items:center;padding:11px 0;border-bottom:1px solid var(--gray-100)">
+              <span>Deadline warnings (48hr)</span>
+              <div class="toggle-switch" data-on="true" data-label="Deadline warnings" style="width:40px;height:22px;background:var(--green);border-radius:11px;cursor:pointer;position:relative;transition:background .2s"><div class="toggle-thumb" style="position:absolute;right:2px;top:2px;width:18px;height:18px;background:var(--white);border-radius:50%;transition:transform .2s"></div></div>
+            </div>
+            <div style="display:flex;justify-content:space-between;align-items:center;padding:11px 0;border-bottom:1px solid var(--gray-100)">
+              <span>Server offline alerts</span>
+              <div class="toggle-switch" data-on="true" data-label="Server offline alerts" style="width:40px;height:22px;background:var(--green);border-radius:11px;cursor:pointer;position:relative;transition:background .2s"><div class="toggle-thumb" style="position:absolute;right:2px;top:2px;width:18px;height:18px;background:var(--white);border-radius:50%;transition:transform .2s"></div></div>
+            </div>
+            <div style="display:flex;justify-content:space-between;align-items:center;padding:11px 0">
+              <span>AI optimization suggestions</span>
+              <div class="toggle-switch" data-on="false" data-label="AI optimization suggestions" style="width:40px;height:22px;background:var(--gray-200);border-radius:11px;cursor:pointer;position:relative;transition:background .2s"><div class="toggle-thumb" style="position:absolute;left:2px;top:2px;width:18px;height:18px;background:var(--white);border-radius:50%;transition:transform .2s"></div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- /page-settings -->
+
+  </div>
+  <!-- /content -->
+</div>
+<!-- /main -->
+
+<!-- ═══════════════════════════════════════════════════════════
+     MODALS
+═══════════════════════════════════════════════════════════ -->
+
+<!-- New Job Modal -->
+<div class="modal-overlay" id="newJobModal">
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="newJobTitle">
+    <div class="modal-header">
+      <div class="modal-title" id="newJobTitle">Create New Service Job</div>
+      <button class="modal-close" onclick="closeModal('newJobModal')" aria-label="Close">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="grid-2">
+        <div class="form-group"><label class="form-label">Matter Name</label><input class="form-input" placeholder="e.g. Smith v Johnson"></div>
+        <div class="form-group"><label class="form-label">Matter Number</label><input class="form-input" placeholder="e.g. #2026-04250"></div>
+        <div class="form-group"><label class="form-label">Defendant Full Name</label><input class="form-input" placeholder="Full legal name"></div>
+        <div class="form-group"><label class="form-label">Service Address</label><input class="form-input" placeholder="Full address"></div>
+        <div class="form-group">
+          <label class="form-label">Court</label>
+          <select class="form-select">
+            <option>Los Angeles County Superior</option>
+            <option>Orange County Superior</option>
+            <option>San Bernardino Superior</option>
+            <option>Riverside County Superior</option>
+          </select>
+        </div>
+        <div class="form-group"><label class="form-label">Service Deadline</label><input type="date" class="form-input"></div>
+        <div class="form-group">
+          <label class="form-label">Priority</label>
+          <select class="form-select"><option>Normal</option><option>High</option><option>Urgent</option></select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Assign Server</label>
+          <select class="form-select">
+            <option>Auto-Assign (AI Recommended)</option>
+            <option>Michael Torres</option>
+            <option>David Kim</option>
+            <option>Sarah Lee</option>
+            <option>Linda Nguyen</option>
+            <option>James Rivera</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Special Instructions</label>
+        <textarea class="form-input" style="height:80px;resize:vertical" placeholder="Service notes, access codes, known schedules, gate codes…"></textarea>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-outline" onclick="closeModal('newJobModal')">Cancel</button>
+      <button class="btn btn-primary" onclick="closeModal('newJobModal');toast('Service job created and assigned successfully','success')">Create Job</button>
+    </div>
+  </div>
+</div>
+
+<!-- New Server Modal -->
+<div class="modal-overlay" id="newServerModal">
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="newServerTitle">
+    <div class="modal-header">
+      <div class="modal-title" id="newServerTitle">Add Process Server</div>
+      <button class="modal-close" onclick="closeModal('newServerModal')" aria-label="Close">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="grid-2">
+        <div class="form-group"><label class="form-label">First Name</label><input class="form-input" placeholder="First name"></div>
+        <div class="form-group"><label class="form-label">Last Name</label><input class="form-input" placeholder="Last name"></div>
+        <div class="form-group"><label class="form-label">CA License Number</label><input class="form-input" placeholder="Process server license #"></div>
+        <div class="form-group">
+          <label class="form-label">Region</label>
+          <select class="form-select"><option>West LA</option><option>East LA</option><option>Central LA</option><option>South Bay</option><option>Orange County</option></select>
+        </div>
+        <div class="form-group"><label class="form-label">Mobile Phone</label><input class="form-input" placeholder="(xxx) xxx-xxxx"></div>
+        <div class="form-group"><label class="form-label">Email Address</label><input class="form-input" placeholder="email@example.com"></div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-outline" onclick="closeModal('newServerModal')">Cancel</button>
+      <button class="btn btn-primary" onclick="closeModal('newServerModal');toast('Process server added successfully','success')">Add Server</button>
+    </div>
+  </div>
+</div>
+
+<!-- Reassign Modal (Job Detail) -->
+<div class="modal-overlay" id="reassignModal">
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="reassignTitle">
+    <div class="modal-header">
+      <div class="modal-title" id="reassignTitle">Reassign Server — Smith v Johnson</div>
+      <button class="modal-close" onclick="closeModal('reassignModal')" aria-label="Close">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-group">
+        <label class="form-label">Select New Server</label>
+        <select class="form-select">
+          <option>David Kim — 95.2% success · Central LA</option>
+          <option>Sarah Lee — 92.8% success · East LA</option>
+          <option>Linda Nguyen — 91.7% success · South Bay</option>
+          <option>James Rivera — 88.4% success · East LA</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Reason for Reassignment</label>
+        <select class="form-select">
+          <option>Proximity — closer to location</option>
+          <option>Higher success rate needed</option>
+          <option>Original server unavailable</option>
+          <option>Specialty serve required</option>
+          <option>Other</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Notes</label>
+        <textarea class="form-input" style="height:60px;resize:vertical" placeholder="Optional notes for the new server…"></textarea>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-outline" onclick="closeModal('reassignModal')">Cancel</button>
+      <button class="btn btn-primary" onclick="closeModal('reassignModal');toast('Server reassigned — notification sent','success')">Reassign</button>
+    </div>
+  </div>
+</div>
+
+<!-- Toast Container -->
+<div id="toast-container" aria-live="polite"></div>
+
+<script src="script.js"></script>
+</body>
+</html>
