@@ -40,7 +40,7 @@ No setup required. Just open the file in any modern browser:
 
 ```bash
 # If you have Python installed, you can also serve it locally:
-cd first-legal-smartserve
+cd first-smartserve
 python3 -m http.server 8080
 # Then open http://localhost:8080 in your browser
 ```
@@ -77,7 +77,7 @@ GitHub Pages typically takes 1–2 minutes to deploy after pushing changes.
 ## File Structure
 
 ```
-first-legal-smartserve/
+first-smartserve/
 ├── index.html    ← Main HTML — all pages and modals
 ├── style.css     ← All styles, design tokens, responsive rules
 ├── script.js     ← All interactions, charts, AI chat, mock data
